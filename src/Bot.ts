@@ -1,8 +1,11 @@
+import * as TGActions from "./service/actions";
+import * as TGCommands from "./service/commands";
+import * as TGEvents from "./service/events";
 import { Telegraf, Telegram } from "telegraf";
 import logger from "./utils/logger";
 
 export default class Bot {
- private static tg: Telegram;
+  private static tg: Telegram;
 
   static get Client(): Telegram {
     return this.tg;
@@ -27,18 +30,18 @@ export default class Bot {
     bot.help(TGCommands.helpCommand);
 
     // other commands
-    bot.command("leave", TGCommands.leaveCommand);
-    bot.command("list", TGCommands.listCommunitiesCommand);
     bot.command("ping", TGCommands.pingCommand);
-    bot.command("status", TGCommands.statusUpdateCommand);
-    bot.command("groupid", TGCommands.groupIdCommand);
 
     // event listeners
     bot.on("text", TGEvents.onMessage);
     bot.on("new_chat_members", TGEvents.onUserJoinedGroup);
     bot.on("left_chat_member", TGEvents.onUserLeftGroup);
-    bot.on("chat_member", TGEvents.onChatMemberUpdate);
-    bot.on("my_chat_member", TGEvents.onMyChatMemberUpdate);
+
+    // action listeners
+    bot.action(
+      /^shrek+$/,
+      TGActions.shrekAction
+    );
 
     // starting the bot
     bot.launch({
